@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GIT Seminar Guide — Q&A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Noto+Sans+Tamil:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --text:#f3f6ff;
+    --muted:#a9b3d1;
+
+    --c-cyan:#5eead4;
+    --c-amber:#fcd34d;
+    --c-pink:#f9a8d4;
+    --c-green:#86efac;
+    --c-violet:#c4b5fd;
+    --c-orange:#fdba74;
+    --c-red:#fca5a5;
+    --c-blue:#93c5fd;
+
+    --glass-bg: rgba(255,255,255,0.07);
+    --glass-bg-hover: rgba(255,255,255,0.12);
+    --glass-border: rgba(255,255,255,0.16);
+    --glass-border-strong: rgba(255,255,255,0.30);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:#0a0b17;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+  }
+  body.lang-ta, body.lang-ta .qa .answer, body.lang-ta .section-title, body.lang-ta .qa summary span:not(.qmark):not(.chev), body.lang-ta h1, body.lang-ta .hero-sub, body.lang-ta .eyebrow, body.lang-ta footer, body.lang-ta .search-box input{
+    font-family:'Noto Sans Tamil','Inter',sans-serif;
+  }
+
+  /* ===== Liquid gradient backdrop ===== */
+  .bg-scene{position:fixed; inset:0; z-index:0; overflow:hidden;}
+  .bg-scene::after{
+    content:""; position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 900px 700px at 15% 8%, rgba(94,234,212,.16), transparent 60%),
+      radial-gradient(ellipse 800px 700px at 90% 15%, rgba(196,181,253,.18), transparent 60%),
+      radial-gradient(ellipse 900px 800px at 50% 100%, rgba(249,168,212,.14), transparent 60%),
+      #0a0b17;
+  }
+  .blob{
+    position:absolute; border-radius:50%; filter:blur(70px); opacity:.55; mix-blend-mode:screen;
+    animation: float 22s ease-in-out infinite;
+  }
+  .blob.b1{width:520px; height:520px; top:-120px; left:-140px; background:radial-gradient(circle, #2dd4bf, transparent 70%); animation-duration:26s;}
+  .blob.b2{width:480px; height:480px; top:-60px; right:-160px; background:radial-gradient(circle, #a78bfa, transparent 70%); animation-duration:30s; animation-delay:-6s;}
+  .blob.b3{width:460px; height:460px; bottom:-160px; left:20%; background:radial-gradient(circle, #f472b6, transparent 70%); animation-duration:24s; animation-delay:-3s;}
+  .blob.b4{width:380px; height:380px; bottom:-100px; right:8%; background:radial-gradient(circle, #fbbf24, transparent 70%); animation-duration:28s; animation-delay:-12s; opacity:.35;}
+  @keyframes float{
+    0%,100%{transform:translate(0,0) scale(1);}
+    33%{transform:translate(30px,-40px) scale(1.08);}
+    66%{transform:translate(-25px,25px) scale(.95);}
+  }
+  .grain{
+    position:absolute; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    opacity:.5;
+  }
+
+  .wrap{position:relative; z-index:1; max-width:960px; margin:0 auto; padding:30px 18px 100px;}
+
+  /* ===== Glass base ===== */
+  .glass{
+    background:var(--glass-bg);
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    border:1px solid var(--glass-border);
+    border-radius:24px;
+    position:relative;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.25) inset,
+      0 0 0 1px rgba(255,255,255,.02) inset,
+      0 20px 50px -20px rgba(0,0,0,.6);
+  }
+  .glass::before{
+    content:"";
+    position:absolute; top:0; left:0; right:0; height:50%;
+    border-radius:24px 24px 100% 100% / 24px 24px 60% 60%;
+    background:linear-gradient(180deg, rgba(255,255,255,.14), transparent 100%);
+    pointer-events:none;
+  }
+
+  /* ===== HERO ===== */
+  header.hero{
+    padding:40px 30px 32px;
+    margin-bottom:24px;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--c-cyan); display:flex; align-items:center; gap:8px; margin-bottom:16px;
+    position:relative; z-index:1;
+  }
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--c-green); box-shadow:0 0 10px var(--c-green); animation:pulse 1.8s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(28px,5vw,42px);
+    line-height:1.12; margin:0 0 12px; font-weight:700;
+    color:#fff; position:relative; z-index:1;
+    text-shadow: 0 1px 0 rgba(255,255,255,.15);
+  }
+  .hero-sub{color:var(--muted); font-size:15px; max-width:600px; line-height:1.65; margin:0 0 22px; position:relative; z-index:1;}
+  .hero-stats{display:flex; gap:14px; flex-wrap:wrap; position:relative; z-index:1; align-items:center;}
+  .stat-pill{
+    font-family:'JetBrains Mono',monospace; font-size:12px;
+    background:rgba(255,255,255,.06); border:1px solid var(--glass-border);
+    padding:8px 14px; border-radius:14px; display:flex; align-items:center; gap:8px;
+  }
+  .stat-pill b{color:#fff; font-family:'Space Grotesk',sans-serif; font-size:14px;}
+  .stat-pill span{color:var(--muted);}
+
+  /* ===== lang tabs ===== */
+  .lang-tabs{
+    display:flex; gap:6px; background:rgba(255,255,255,.06); border:1px solid var(--glass-border);
+    padding:5px; border-radius:14px; backdrop-filter:blur(14px);
+  }
+  .lang-tab{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600;
+    padding:8px 16px; border-radius:10px; border:none; background:transparent; color:var(--muted);
+    cursor:pointer; transition:.2s; display:flex; align-items:center; gap:6px;
+  }
+  .lang-tab:hover{color:var(--text);}
+  .lang-tab.active{
+    background:#5eead4; color:#0a0b17;
+    box-shadow:0 4px 16px rgba(94,234,212,.35);
+  }
+
+  /* ===== search ===== */
+  .search-box{margin:0 0 18px; position:relative;}
+  .search-box input{
+    width:100%; padding:15px 18px 15px 46px; border-radius:18px;
+    background:var(--glass-bg); backdrop-filter:blur(18px) saturate(160%); -webkit-backdrop-filter:blur(18px) saturate(160%);
+    border:1px solid var(--glass-border); color:var(--text);
+    font-size:14.5px; font-family:'Inter',sans-serif; outline:none;
+    transition:border-color .2s, box-shadow .2s, background .2s;
+    box-shadow:0 1px 0 rgba(255,255,255,.2) inset;
+  }
+  .search-box input::placeholder{color:var(--muted);}
+  .search-box input:focus{border-color:rgba(94,234,212,.55); box-shadow:0 0 0 4px rgba(94,234,212,.14), 0 1px 0 rgba(255,255,255,.2) inset; background:rgba(255,255,255,.1);}
+  .search-box::before{
+    content:"⌕"; position:absolute; left:17px; top:50%; transform:translateY(-50%);
+    color:var(--muted); font-size:18px; pointer-events:none; z-index:2;
+  }
+
+  /* ===== category pills ===== */
+  .pills{display:flex; flex-wrap:wrap; gap:9px; margin-bottom:30px;}
+  .pill{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; padding:9px 15px; border-radius:999px;
+    border:1px solid var(--glass-border); background:var(--glass-bg);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    color:var(--muted); cursor:pointer; transition:.2s; display:flex; align-items:center; gap:7px;
+    user-select:none; box-shadow:0 1px 0 rgba(255,255,255,.15) inset;
+  }
+  .pill .led{width:7px;height:7px;border-radius:50%; background:currentColor; box-shadow:0 0 7px currentColor;}
+  .pill:hover{background:var(--glass-bg-hover); color:var(--text); border-color:var(--glass-border-strong);}
+  .pill.active{
+    color:#0a0b17; font-weight:700; border-color:transparent;
+    background: color-mix(in srgb, currentColor 70%, white 30%);
+  }
+  .pill.active .led{background:#0a0b17; box-shadow:none;}
+
+  /* ===== sections ===== */
+  .section{margin-bottom:30px; scroll-margin-top:20px;}
+  .section-head{display:flex; align-items:center; gap:12px; margin-bottom:14px; padding-left:4px;}
+  .section-icon{
+    width:40px;height:40px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+    font-size:19px; flex-shrink:0; background:rgba(255,255,255,.07);
+    border:1px solid var(--glass-border); backdrop-filter:blur(10px);
+    box-shadow:0 1px 0 rgba(255,255,255,.2) inset;
+  }
+  .section-title{font-family:'Space Grotesk',sans-serif; font-size:19px; font-weight:600; color:#fff;}
+  .section-count{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); margin-left:auto;}
+
+  /* ===== qa glass cards ===== */
+  .qa{
+    border-radius:18px; margin-bottom:11px; overflow:hidden;
+    background:var(--glass-bg); backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%);
+    border:1px solid var(--glass-border);
+    box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 10px 30px -18px rgba(0,0,0,.6);
+    transition:background .2s, border-color .2s, transform .15s, box-shadow .2s;
+  }
+  .qa:hover{
+    background:var(--glass-bg-hover);
+    border-color: color-mix(in srgb, var(--accent, #5eead4) 45%, var(--glass-border) 55%);
+    box-shadow:0 1px 0 rgba(255,255,255,.22) inset, 0 14px 34px -16px rgba(0,0,0,.65), 0 0 0 1px color-mix(in srgb, var(--accent,#5eead4) 25%, transparent);
+  }
+  .qa summary{
+    list-style:none; cursor:pointer; padding:16px 19px; display:flex; gap:12px; align-items:flex-start;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:14.8px; color:#f4f7ff;
+  }
+  .qa summary::-webkit-details-marker{display:none;}
+  .qa summary .qmark{font-family:'Space Grotesk',sans-serif; color:var(--accent,#5eead4); font-weight:700; flex-shrink:0;}
+  .qa summary .chev{
+    margin-left:auto; color:var(--muted); transition:transform .25s ease; flex-shrink:0;
+    width:22px; height:22px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,.06); border:1px solid var(--glass-border); font-size:11px;
+  }
+  .qa[open] summary .chev{transform:rotate(180deg); color:var(--accent,#5eead4);}
+  .qa .answer{
+    padding:0 19px 18px 46px; color:#d3dbf2; font-size:14.2px; line-height:1.65;
+  }
+  .qa .answer ul{margin:6px 0 0; padding-left:18px;}
+  .qa .answer li{margin-bottom:4px;}
+  .qa .answer b{color:#fff;}
+  .qa .answer code{
+    font-family:'JetBrains Mono',monospace;
+    background:rgba(0,0,0,.35); border:1px solid var(--glass-border);
+    padding:1px 7px; border-radius:6px; font-size:12.5px; color:var(--c-amber);
+    backdrop-filter:blur(4px);
+  }
+
+  .hidden{display:none !important;}
+
+  footer{
+    text-align:center; color:var(--muted); font-size:12.5px; margin-top:44px;
+    font-family:'JetBrains Mono',monospace; position:relative; z-index:1;
+  }
+
+  ::selection{background:rgba(94,234,212,.3);}
+
+  @media (max-width:640px){
+    header.hero{padding:30px 20px 26px;}
+    .qa .answer{padding-left:19px;}
+    .hero-stats{gap:10px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .eyebrow .dot, .blob{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-scene">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div class="blob b4"></div>
+  <div class="grain"></div>
+</div>
+
+<div class="wrap">
+
+  <header class="hero glass">
+    <div class="eyebrow"><span class="dot"></span> <span id="eyebrowText">GCE A/L · GIT SHORT NOTES</span></div>
+    <h1 id="h1Text">GIT Seminar Guide,<br>as quick Q&amp;A</h1>
+    <p class="hero-sub" id="subText">Your Tamil short-notes PDF, turned into an easy English Q&amp;A revision site. Tap a card to open the answer. Use the search or colour pills to jump to a topic fast.</p>
+    <div class="hero-stats">
+      <div class="lang-tabs" id="langTabs">
+        <button class="lang-tab active" data-lang="en">🇬🇧 English</button>
+        <button class="lang-tab" data-lang="ta">🌐 தமிழ்</button>
+      </div>
+      <div class="stat-pill"><b>11</b> <span id="statTopics">Topics</span></div>
+      <div class="stat-pill"><b>60+</b> <span id="statCards">Q&amp;A cards</span></div>
+      <div class="stat-pill"><b>100%</b> <span id="statExam">Exam focused</span></div>
+    </div>
+  </header>
+
+  <div class="search-box">
+    <input id="searchInput" type="text" placeholder="Search a question... e.g. RAM, LAN, virus, Excel formula">
+  </div>
+
+  <div class="pills" id="pills"></div>
+
+  <div id="sections"></div>
+
+  <footer id="footerText">Made for Rinas · study smart, not hard ⚡</footer>
+</div>
+
+<script>
+const DATA_EN = [
+  {
+    id:"history", title:"Computer History & Generations", icon:"🕰️", color:"#5eead4",
+    qa:[
+      ["Who is called the 'father of the computer'?","<b>Charles Babbage</b> is regarded as the father of the computer."],
+      ["Who is considered the first computer programmer?","<b>Ada Lovelace</b> is considered the first computer programmer."],
+      ["What was the first electronic digital computer?","<b>ENIAC</b> (Electronic Numerical Integrator and Computer) was the first electronic digital computer."],
+      ["What is the 'stored program concept' and who proposed it?","The idea that a computer can store a set of instructions in memory and use the same computer to do different jobs just by changing the program. This was proposed by <b>John Von Neumann</b>."],
+      ["Name some early calculating devices in order.","<ul><li>Abacus (Chinese)</li><li>Napier's Bones – John Napier</li><li>Pascaline – Blaise Pascal (1642)</li><li>Stepped Reckoner – Gottfried Leibniz (1673)</li><li>Difference Engine – Charles Babbage (1822)</li><li>Punched Card – Joseph Jacquard (1801)</li><li>Analytical Engine – Charles Babbage (1833)</li></ul>"],
+      ["What are the 4 generations of computers and their key parts?","<ul><li><b>1st Gen</b> – Vacuum Tubes → e.g. ENIAC, MARK 1, UNIVAC</li><li><b>2nd Gen</b> – Transistors → e.g. IBM 1401, ICL 2950/10</li><li><b>3rd Gen</b> – Integrated Circuits (IC) → e.g. IBM 360, UNIVAC 9000</li><li><b>4th Gen</b> – VLSI / Microprocessor → e.g. IBM, Pentium</li></ul>"],
+      ["Why is the 4th generation so fast and small?","Because it uses <b>VLSI (Very Large Scale Integration) / Microprocessors</b>, packing millions of tiny components onto one chip — giving huge speed with very little space and power."]
+    ]
+  },
+  {
+    id:"basics", title:"Data, Information & Computer Basics", icon:"💾", color:"#fcd34d",
+    qa:[
+      ["What is the difference between Data and Information?","<b>Data</b> = raw, unorganised facts (numbers, letters, symbols) with no meaning by themselves.<br><b>Information</b> = data that has been processed/organised into something meaningful and useful.<br>Example: A student's raw marks = data. The average of those marks = information."],
+      ["What are the three types of data?","<ul><li><b>Text</b> — letters, numbers, symbols</li><li><b>Audio</b> — sound</li><li><b>Image</b> — pictures, graphs, drawings</li></ul>"],
+      ["What are good qualities of information?","It should be relevant to the purpose, clear & reliable (accurate), reach the right person, and be delivered on time."],
+      ["What are the 4 basic elements of a computer system?","<ul><li><b>Hardware</b> — the physical parts you can touch</li><li><b>Software</b> — instructions that tell the hardware what to do</li><li><b>Firmware</b> — basic instructions needed to start the system</li><li><b>Liveware</b> — the person using the computer</li></ul>"],
+      ["What are the special characteristics of a computer?","Speed, Accuracy, Reliability, No IQ (does exactly what it's told), Efficiency, No feelings, and Storage capacity."],
+      ["What are the 3 basic operations (functions) of a computer?","<b>Input → Processing → Output</b>, supported by Storage and Control."],
+      ["What are the main types of computers by size?","Super Computer, Mainframe Computer, Mini Computer, and Micro Computer (Desktop, Laptop, Palmtop, Workstation)."],
+      ["What are computers classified by technology?","Digital, Analog, and Hybrid."],
+      ["What are computers classified by purpose?","Special Purpose (built for one job) and General Purpose (can do many jobs)."]
+    ]
+  },
+  {
+    id:"hardware", title:"Input, Output & Hardware", icon:"🖱️", color:"#f9a8d4",
+    qa:[
+      ["What is Hardware?","The physical, touchable parts of a computer that cannot be changed easily — e.g. keyboard, mouse, monitor, printer."],
+      ["What are the 4 main hardware categories?","<b>Input devices, Motherboard/Processor, Memory, Output devices.</b>"],
+      ["Give examples of Input devices.","Keyboard, Mouse, Scanner, Webcam, Digital Camera, Trackball, Joystick, Light Pen, Barcode Reader, MICR, OMR."],
+      ["What is MICR and OMR used for?","<b>MICR</b> (Magnetic Ink Character Reader) reads magnetic ink text — used in cheques.<br><b>OMR</b> (Optical Mark Recognition) detects marked shapes — used in answer sheets/exams."],
+      ["Give examples of Output devices.","Monitor, Printer, Plotter, Speaker, Multimedia Projector."],
+      ["What is the difference between CRT and LCD monitors?","<b>CRT:</b> needs more space, less clear image, cheaper, uses more electricity, screen flicker happens.<br><b>LCD:</b> needs less space, clearer image, costs more, uses less electricity, no screen flicker."],
+      ["What are the two types of printers?","<b>Impact Printers</b> (strike the paper) — e.g. Dot Matrix, Line Printers.<br><b>Non-Impact Printers</b> (no striking) — e.g. Laser, Ink Jet, Thermal, Dye Sublimation."],
+      ["What is a Motherboard?","The main circuit board that connects all parts of the computer together and coordinates how they work."],
+      ["Name common computer Ports and what connects to them.","<ul><li><b>PS/2</b> — keyboard, mouse</li><li><b>Serial port</b> — modem, mouse</li><li><b>Parallel port</b> — printer, scanner</li><li><b>Network port</b> — connects computer to a network</li><li><b>VGA port</b> — monitor, projector</li><li><b>USB port</b> — keyboard, mouse, scanner, printer, camera, modem</li><li><b>Audio port</b> — speaker, mic, headphone</li><li><b>Modem port</b> — modem</li></ul>"]
+    ]
+  },
+  {
+    id:"memory", title:"Memory & Storage", icon:"🧠", color:"#86efac",
+    qa:[
+      ["What are the 4 main types of memory found in a computer?","<b>RAM</b> (Random Access Memory), <b>ROM</b> (Read Only Memory), <b>Cache Memory</b>, and <b>Register</b>."],
+      ["What is RAM?","The main <b>temporary</b> memory. It stores data/instructions needed while the processor is working. If power is cut, everything in RAM is lost."],
+      ["What is ROM?","<b>Permanent</b> memory holding startup instructions. Data survives power loss and normally cannot be changed. Types: PROM, EPROM, EEPROM."],
+      ["What's the key difference between RAM and ROM?","RAM = temporary, changeable, lost on power-off. ROM = permanent, mostly fixed, keeps data even without power."],
+      ["What are secondary (auxiliary) storage devices? Give examples.","Devices that store data permanently, inside or outside the computer:<ul><li><b>Magnetic media</b> — Hard Disk, Floppy Disk, Magnetic Tape</li><li><b>Optical media</b> — CD, DVD, Blu-Ray</li><li><b>Solid state media</b> — USB flash drive, Memory card</li></ul>"],
+      ["What is the storage capacity of a CD and DVD?","<b>CD:</b> 650MB–900MB. <b>DVD:</b> 4.7GB–9GB."],
+      ["What is the floppy disk's storage capacity?","1.44 MB."],
+      ["What are computer storage units, smallest to largest?","<code>4 Bit = 1 Nibble</code> · <code>8 Bit = 1 Byte</code> · <code>1024 Byte = 1 KB</code> · <code>1024 KB = 1 MB</code> · <code>1024 MB = 1 GB</code> · <code>1024 GB = 1 TB</code>"]
+    ]
+  },
+  {
+    id:"network", title:"Networking & Data Communication", icon:"🌐", color:"#c4b5fd",
+    qa:[
+      ["What is a computer network?","A group of two or more computers connected together to share data and resources."],
+      ["What are the 3 main types of networks by area?","<b>LAN</b> (Local Area Network) — small area, e.g. one building/school.<br><b>MAN</b> (Metropolitan Area Network) — covers a city.<br><b>WAN</b> (Wide Area Network) — no geographical limit, e.g. the Internet."],
+      ["What are the 3 parts of data communication?","<b>Source (Sender), Medium, Receiver.</b>"],
+      ["What are the two types of communication media?","<b>Guided media</b> (uses wires — twisted pair, coaxial, fibre optic) and <b>Radiated/unguided media</b> (uses waves — radio, infrared, microwave, satellite)."],
+      ["What are the ways of transmitting data?","<b>Serial transmission</b> (bits go one after another, needs 1 wire) and <b>Parallel transmission</b> (many bits sent at the same time)."],
+      ["What are the 3 directions of data flow?","<b>Simplex</b> — one direction only (TV, radio).<br><b>Half duplex</b> — both directions but not at the same time (Walkie Talkie).<br><b>Full duplex</b> — both directions at the same time (Telephone)."],
+      ["What network devices should I know?","<ul><li><b>Modem</b> — converts digital signal ↔ analog signal</li><li><b>Hub</b> — connects multiple computers together</li><li><b>Switch</b> — connects multiple computers and manages data flow smartly</li><li><b>NIC (Network Interface Card)</b> — card that connects a PC to the network</li><li><b>Server</b> — the main computer that provides services to others</li><li><b>Client</b> — a computer that receives services from a server</li></ul>"],
+      ["What are common network topologies?","Star, Ring, Bus, Tree, and Mesh topology."],
+      ["What are advantages and disadvantages of a network?","<b>Advantages:</b> speed, saves cost, shared resources, centralised software control, easy communication, email.<br><b>Disadvantages:</b> one failure can affect the whole network, viruses spread faster, data can be lost/corrupted, outsiders may steal data, harder to manage."]
+    ]
+  },
+  {
+    id:"numbers", title:"Number Systems & Logic Gates", icon:"🔢", color:"#fdba74",
+    qa:[
+      ["What are the 4 number systems used in computing?","<b>Decimal</b> (Base 10, digits 0–9), <b>Binary</b> (Base 2, digits 0–1), <b>Octal</b> (Base 8, digits 0–7), <b>Hexadecimal</b> (Base 16, digits 0–9, A–F)."],
+      ["What logic gates should I know for exams?","AND, OR, NOT, NAND, NOR, XOR, XNOR — each with its own symbol and truth table."],
+      ["Quick summary of what each basic gate does?","<ul><li><b>AND</b> — output 1 only if all inputs are 1</li><li><b>OR</b> — output 1 if any input is 1</li><li><b>NOT</b> — flips the input (1→0, 0→1)</li><li><b>NAND</b> — opposite of AND</li><li><b>NOR</b> — opposite of OR</li><li><b>XOR</b> — output 1 only if inputs are different</li><li><b>XNOR</b> — output 1 only if inputs are the same</li></ul>"]
+    ]
+  },
+  {
+    id:"software", title:"Software & Operating Systems", icon:"🧩", color:"#93c5fd",
+    qa:[
+      ["What are the two main categories of software?","<b>System software</b> (controls the hardware — e.g. Operating System) and <b>Application software</b> (does a specific task for the user — e.g. Word, Excel)."],
+      ["What is an Operating System (OS)? Give examples.","The software package needed to run the computer's operations. Examples: Windows, Linux, Unix, Mac, DOS."],
+      ["What are the main functions of an Operating System?","Memory management, Process/task management, Device (support) management, Job/task scheduling, and Security management."],
+      ["What are the two types of user interfaces?","<b>CLI</b> (Command Line Interface) — type text commands, e.g. MS-DOS, Unix, Linux.<br><b>GUI</b> (Graphical User Interface) — use icons, windows, menus, pointer, e.g. Windows, Mac."],
+      ["What are the main parts of a GUI?","Windows, Icons, Menu, Pointer."],
+      ["What is licensed vs open-source software?","<b>Licensed/copyrighted:</b> owned by a person or company; using, copying, or modifying it needs permission (e.g. Microsoft software).<br><b>Open-source:</b> not restricted by strict copyright; can be freely used, changed, copied, or shared."],
+      ["What are examples of Utility (application) software?","<ul><li><b>Backup software</b> — makes copies of files</li><li><b>Disk Defragmenter</b> — organises the disk for speed</li><li><b>Antivirus utilities</b> — prevent, detect and remove viruses</li><li><b>Disk Partitioning</b> — divides a disk into separate sections</li><li><b>Disk Cleanup</b> — removes temporary files</li></ul>"]
+    ]
+  },
+  {
+    id:"internet", title:"Internet & Email", icon:"✉️", color:"#5eead4",
+    qa:[
+      ["What is the Internet?","A huge worldwide network made of many smaller networks connected together, linking millions of computers globally."],
+      ["What is a Web Page and what language is it written in?","A document that can be viewed and navigated through the internet, written in <b>HTML</b> (HyperText Markup Language)."],
+      ["What is an IP Address?","A unique number/address used to identify each device connected to the internet."],
+      ["What is a URL?","<b>URL</b> = Uniform Resource Locator — the web address that points a browser to a specific page. Example structure: <code>Protocol // Server . Domain / Page</code>"],
+      ["What is a Web Browser? Give examples.","Software used to access and view the internet. Examples: Internet Explorer, Google Chrome, Mozilla Firefox, Opera, Safari."],
+      ["What is a Search Engine? Give examples.","A tool used to search for information on the internet. Examples: Google, Yahoo, Bing/MSN, Altavista."],
+      ["What are common domain name endings and what do they mean?","<code>.com</code> commercial · <code>.edu</code> education · <code>.org</code> non-government org · <code>.gov</code> government · <code>.mil</code> military · <code>.int</code> international org · <code>.net</code> network technology · <code>.lk</code> Sri Lanka · <code>.us</code> USA"],
+      ["What are the main uses/benefits of the internet?","Easy access to information, email, internet calling, online business/shopping, file transfer, news, and access to educational resources."],
+      ["What are the parts of an email address? e.g. sprashanthan6@gmail.com","The part before <code>@</code> is the <b>username</b>, the part after <code>@</code> is the <b>domain name</b>."],
+      ["What's the difference between CC and BCC in email?","<b>CC (Carbon Copy):</b> everyone can see who else received the copy.<br><b>BCC (Blind Carbon Copy):</b> hidden — other recipients can't see who was BCC'd."],
+      ["What is 'Attachment' in an email?","A separate file (document, picture, sound, video) sent along with the email message."],
+      ["What are the advantages and disadvantages of email?","<b>Advantages:</b> fast, reliable, convenient, low cost, can send to many people at once.<br><b>Disadvantages:</b> might not reach the receiver, might not be opened in time, needs electricity/internet, receiver may not reply."]
+    ]
+  },
+  {
+    id:"security", title:"Security, Malware & Health", icon:"🛡️", color:"#fca5a5",
+    qa:[
+      ["What is a Computer Virus?","Malicious code that has the ability to self-replicate inside a system and spreads through internet, networks, email, CDs, floppy disks, flash drives, causing damage."],
+      ["What is a Worm?","Malware that self-replicates <b>without any human action</b> and spreads fast through networks, causing widespread damage."],
+      ["What is a Trojan Horse?","Malware that pretends to be useful/legitimate software but secretly causes damage once installed."],
+      ["What is Spyware?","Malware that hides in your computer and secretly copies/sends your data (even passwords) to outsiders."],
+      ["What is Adware?","Unwanted advertisements and pop-ups that appear while browsing websites."],
+      ["What effects can a virus attack have on a computer?","Loss of stored data/information, software stops working properly, reduced computer performance, and possible long-term hardware damage."],
+      ["What are warning signs that a computer has a virus?","Computer runs slower than usual, crashes for no reason, takes long to start or can't restart, some software won't run, files disappear or unwanted files appear, unwanted pop-ups/messages appear."],
+      ["How can you protect a computer from viruses?","Keep antivirus software running and updated, take regular backups, use built-in protection features, avoid using admin account for normal use, be careful opening email attachments, and scan pendrives/floppy disks before opening."],
+      ["What health problems can come from long computer use?","Eye strain, back pain, reduced immunity, and headaches. A common condition is 'Repetitive Strain Injury' (RSI) — pain in hands/wrists from repeated typing/mouse use."],
+      ["How can I protect my health while using a computer?","Blink your eyes often, every 10 minutes look at something 20+ feet away, sit up straight (don't slouch), use an ergonomic keyboard/mouse, take proper breaks, and keep the room airy and well-lit."]
+    ]
+  },
+  {
+    id:"database", title:"Database (DBMS)", icon:"🗄️", color:"#fcd34d",
+    qa:[
+      ["What is DBMS?","<b>Database Management System</b> — software used to store, manage, and protect data easily and safely. It can add, edit, delete, organise, query and secure data."],
+      ["What are the main objects in a DBMS like Access?","Tables, Queries, Forms, Reports, Pages, Macros, Modules."],
+      ["What is a Table in a database?","The main unit where data is actually stored, organised into rows and columns (fields)."],
+      ["What is a Query used for?","To ask questions about the data in a table and retrieve only the information you need."],
+      ["What is a Form used for?","To enter data into a table in an easy, user-friendly way (instead of typing directly into a table)."],
+      ["What is a Report used for?","To display or print data in an attractive, organised layout, taken from a Table or Query."],
+      ["What is a Primary Key?","A field (or combination of fields) that uniquely identifies each record in a table."],
+      ["What is a Foreign Key?","A field in one table that refers to the Primary Key of another table, linking the two tables."],
+      ["What's the difference between Data Duplication and Data Redundancy?","<b>Data Duplication:</b> the same data repeated in different rows of one table.<br><b>Data Redundancy:</b> the same data stored again in multiple different tables."],
+      ["What are the relationship types between tables?","One-to-One [1:1], One-to-Many [1:M], Many-to-Many [M:N]."],
+      ["What's the difference between manual filing and electronic (database) filing?","<b>Manual:</b> low efficiency, harder to correct, less reliable, hard to search, needs more space & people.<br><b>Electronic:</b> high efficiency, easy to correct, more reliable, easy to search, needs less space & fewer people."]
+    ]
+  },
+  {
+    id:"office", title:"MS Office Quick Reference", icon:"📊", color:"#86efac",
+    qa:[
+      ["What are common Word Processing software examples?","Microsoft Word, LibreOffice Writer, Kingsoft Office, Apple iWork Pages, Corel WordPerfect."],
+      ["How do I make text Bold, Underline, or Superscript in Word?","<b>Bold:</b> select text → <code>Ctrl + B</code> or Home ribbon → Bold.<br><b>Underline:</b> select text → <code>Ctrl + U</code>.<br><b>Superscript</b> (like TH in 17TH): select text → Home → Superscript.<br><b>Subscript</b> (like the 2 in H2O): select text → Home → Subscript."],
+      ["How do I insert a picture, symbol, or hyperlink in Word?","<b>Picture:</b> Insert → Picture → choose file.<br><b>Symbol:</b> Insert → Symbols → choose symbol.<br><b>Hyperlink:</b> Insert → Hyperlink → enter the link."],
+      ["What are the key Excel formulas I need to know?","<code>=SUM(range)</code> — total of values<br><code>=AVERAGE(range)</code> — average value<br><code>=MAX(range)</code> — highest value<br><code>=MIN(range)</code> — lowest value<br><code>=RANK(number, range)</code> — ranking position"],
+      ["What chart types are commonly used in Excel?","Column Chart, Bar Chart, Line Chart, Pie Chart, Scatter Chart."],
+      ["What are the PowerPoint view modes?","Normal View, Slide Sorter View, Outline View, Presentation (Slide Show) View."],
+      ["How do I add animation or slide transitions in PowerPoint?","<b>Animation:</b> Slide Show → Custom Animation → Add Effect.<br><b>Transitions:</b> Slide Show → Slide Transitions → choose an effect."]
+    ]
+  },
+  {
+    id:"careers", title:"IT Careers & Real-World Uses", icon:"💼", color:"#f9a8d4",
+    qa:[
+      ["Where is IT used in daily life?","Education (e-learning, school records), Healthcare (CT/MRI scanners, telemedicine), Banking (ATM, online banking), Communication (video calls, email, fax), Construction, and Security systems."],
+      ["What are common technology-related job roles?","Data Entry Operator, Computer Operator, Programmer, Software Developer, System Analyst, Software Engineer, Hardware Engineer, Network Administrator, IT Manager, Web Developer, Desktop Publisher."]
+    ]
+  }
+];
+
+const DATA_TA = [
+  {
+    id:"history", title:"கணினி வரலாறு மற்றும் தலைமுறைகள்", icon:"🕰️", color:"#5eead4",
+    qa:[
+      ["'கணினியின் தந்தை' என அழைக்கப்படுபவர் யார்?","<b>சார்லஸ் பாபேஜ்</b> கணினியின் தந்தையாகக் கருதப்படுகிறார்."],
+      ["முதல் கணினி நிரலாளராகக் கருதப்படுபவர் யார்?","<b>அடா லவ்லேஸ்</b> முதல் கணினி நிரலாளராகக் கருதப்படுகிறார்."],
+      ["முதல் மின்னணு டிஜிட்டல் கணினி எது?","<b>ENIAC</b> (Electronic Numerical Integrator and Computer) முதல் மின்னணு டிஜிட்டல் கணினியாகும்."],
+      ["'சேமிக்கப்பட்ட நிரல் கருத்து' (stored program concept) என்றால் என்ன, அதை முன்மொழிந்தவர் யார்?","ஒரு கணினி நினைவகத்தில் ஒரு தொகுப்பு வழிமுறைகளைச் சேமித்து, நிரலை மாற்றுவதன் மூலம் அதே கணினியைப் பயன்படுத்தி வெவ்வேறு பணிகளைச் செய்யக்கூடும் என்ற கருத்து. இதை <b>ஜான் வான் நியூமன்</b> முன்மொழிந்தார்."],
+      ["ஆரம்பகால கணக்கிடும் கருவிகள் சிலவற்றை வரிசைப்படி கூறவும்.","<ul><li>அபாகஸ் (சீனா)</li><li>நேபியரின் எலும்புகள் – ஜான் நேபியர்</li><li>பாஸ்கலின் – பிளேஸ் பாஸ்கல் (1642)</li><li>ஸ்டெப்ட் ரெக்னர் – காட்ஃபிரைட் லீப்னிட்ஸ் (1673)</li><li>டிஃபரன்ஸ் எஞ்சின் – சார்லஸ் பாபேஜ் (1822)</li><li>பஞ்ச் கார்டு – ஜோசப் ஜாக்கார்டு (1801)</li><li>அனலிடிகல் எஞ்சின் – சார்லஸ் பாபேஜ் (1833)</li></ul>"],
+      ["கணினிகளின் 4 தலைமுறைகள் மற்றும் அவற்றின் முக்கிய பாகங்கள் என்ன?","<ul><li><b>1வது தலைமுறை</b> – வெற்றிடக் குழாய்கள் (Vacuum Tubes) → எ.கா. ENIAC, MARK 1, UNIVAC</li><li><b>2வது தலைமுறை</b> – டிரான்சிஸ்டர்கள் → எ.கா. IBM 1401, ICL 2950/10</li><li><b>3வது தலைமுறை</b> – ஒருங்கிணைந்த சுற்றுகள் (IC) → எ.கா. IBM 360, UNIVAC 9000</li><li><b>4வது தலைமுறை</b> – VLSI / மைக்ரோபுராசசர் → எ.கா. IBM, Pentium</li></ul>"],
+      ["4வது தலைமுறை ஏன் இவ்வளவு வேகமாகவும் சிறியதாகவும் உள்ளது?","இது <b>VLSI (Very Large Scale Integration) / மைக்ரோபுராசசர்களை</b> பயன்படுத்துவதால், மில்லியன் கணக்கான சிறிய கூறுகளை ஒரே சிப்பில் அடக்குகிறது — மிகக் குறைந்த இடம் மற்றும் மின்சாரத்துடன் பெரும் வேகத்தை வழங்குகிறது."]
+    ]
+  },
+  {
+    id:"basics", title:"தரவு, தகவல் மற்றும் கணினி அடிப்படைகள்", icon:"💾", color:"#fcd34d",
+    qa:[
+      ["தரவு (Data) மற்றும் தகவல் (Information) இடையேயான வேறுபாடு என்ன?","<b>தரவு (Data)</b> = பதப்படுத்தப்படாத, ஒழுங்கமைக்கப்படாத உண்மைகள் (எண்கள், எழுத்துக்கள், குறியீடுகள்) தனியாக எந்த அர்த்தமும் இல்லாதவை.<br><b>தகவல் (Information)</b> = அர்த்தமுள்ள மற்றும் பயனுள்ளதாக மாற்றப்பட்ட/ஒழுங்கமைக்கப்பட்ட தரவு.<br>உதாரணம்: ஒரு மாணவரின் மூல மதிப்பெண்கள் = தரவு. அந்த மதிப்பெண்களின் சராசரி = தகவல்."],
+      ["தரவின் மூன்று வகைகள் யாவை?","<ul><li><b>உரை (Text)</b> — எழுத்துக்கள், எண்கள், குறியீடுகள்</li><li><b>ஒலி (Audio)</b> — சத்தம்</li><li><b>படம் (Image)</b> — படங்கள், வரைபடங்கள், சித்திரங்கள்</li></ul>"],
+      ["நல்ல தகவலின் சிறந்த குணங்கள் யாவை?","அது நோக்கத்திற்கு பொருத்தமானதாக, தெளிவாகவும் நம்பகமானதாகவும் (துல்லியமாக), சரியான நபரை சென்றடையக்கூடியதாக, மற்றும் சரியான நேரத்தில் வழங்கப்படக்கூடியதாக இருக்க வேண்டும்."],
+      ["கணினி அமைப்பின் 4 அடிப்படை கூறுகள் யாவை?","<ul><li><b>வன்பொருள் (Hardware)</b> — நீங்கள் தொடக்கூடிய இயற்பியல் பாகங்கள்</li><li><b>மென்பொருள் (Software)</b> — வன்பொருள் என்ன செய்ய வேண்டும் என்பதைச் சொல்லும் வழிமுறைகள்</li><li><b>ஃபார்ம்வேர் (Firmware)</b> — அமைப்பைத் தொடங்குவதற்குத் தேவையான அடிப்படை வழிமுறைகள்</li><li><b>லைவ்வேர் (Liveware)</b> — கணினியைப் பயன்படுத்தும் நபர்</li></ul>"],
+      ["கணினியின் சிறப்பியல்புகள் யாவை?","வேகம், துல்லியம், நம்பகத்தன்மை, IQ இல்லாதது (சொன்னதை மட்டும் செய்யும்), செயல்திறன், உணர்வுகள் இல்லாதது, மற்றும் சேமிப்புத் திறன்."],
+      ["கணினியின் 3 அடிப்படை செயல்பாடுகள் (functions) யாவை?","<b>உள்ளீடு (Input) → செயலாக்கம் (Processing) → வெளியீடு (Output)</b>, சேமிப்பு (Storage) மற்றும் கட்டுப்பாடு (Control) ஆல் ஆதரிக்கப்படுகிறது."],
+      ["அளவின் அடிப்படையில் கணினிகளின் முக்கிய வகைகள் யாவை?","சூப்பர் கம்ப்யூட்டர், மெயின்பிரேம் கம்ப்யூட்டர், மினி கம்ப்யூட்டர், மற்றும் மைக்ரோ கம்ப்யூட்டர் (டெஸ்க்டாப், லேப்டாப், பாம்டாப், வொர்க்ஸ்டேஷன்)."],
+      ["தொழில்நுட்பத்தின் அடிப்படையில் கணினிகள் எவ்வாறு வகைப்படுத்தப்படுகின்றன?","டிஜிட்டல், அனலாக், மற்றும் ஹைப்ரிட்."],
+      ["நோக்கத்தின் அடிப்படையில் கணினிகள் எவ்வாறு வகைப்படுத்தப்படுகின்றன?","சிறப்பு நோக்கம் (Special Purpose) (ஒரு பணிக்காக மட்டும் உருவாக்கப்பட்டது) மற்றும் பொது நோக்கம் (General Purpose) (பல பணிகளைச் செய்யக்கூடியது)."]
+    ]
+  },
+  {
+    id:"hardware", title:"உள்ளீடு, வெளியீடு மற்றும் வன்பொருள்", icon:"🖱️", color:"#f9a8d4",
+    qa:[
+      ["வன்பொருள் (Hardware) என்றால் என்ன?","எளிதில் மாற்ற முடியாத, தொடக்கூடிய கணினியின் இயற்பியல் பாகங்கள் — எ.கா. கீபோர்டு, மவுஸ், மானிட்டர், பிரிண்டர்."],
+      ["வன்பொருளின் 4 முக்கிய வகைகள் யாவை?","<b>உள்ளீட்டுச் சாதனங்கள், மதர்போர்டு/புராசசர், நினைவகம், வெளியீட்டுச் சாதனங்கள்.</b>"],
+      ["உள்ளீட்டுச் சாதனங்களுக்கு உதாரணங்கள் தரவும்.","கீபோர்டு, மவுஸ், ஸ்கேனர், வெப்கேம், டிஜிட்டல் கேமரா, டிராக்பால், ஜாய்ஸ்டிக், லைட் பென், பார்கோட் ரீடர், MICR, OMR."],
+      ["MICR மற்றும் OMR எதற்காகப் பயன்படுத்தப்படுகின்றன?","<b>MICR</b> (Magnetic Ink Character Reader) காந்த மை எழுத்துக்களைப் படிக்கிறது — காசோலைகளில் பயன்படுத்தப்படுகிறது.<br><b>OMR</b> (Optical Mark Recognition) குறியிடப்பட்ட வடிவங்களைக் கண்டறிகிறது — பதில் தாள்கள்/தேர்வுகளில் பயன்படுத்தப்படுகிறது."],
+      ["வெளியீட்டுச் சாதனங்களுக்கு உதாரணங்கள் தரவும்.","மானிட்டர், பிரிண்டர், பிளாட்டர், ஸ்பீக்கர், மல்டிமீடியா ப்ரொஜெக்டர்."],
+      ["CRT மற்றும் LCD மானிட்டர்களுக்கு இடையேயான வேறுபாடு என்ன?","<b>CRT:</b> அதிக இடம் தேவை, குறைவான தெளிவான படம், மலிவானது, அதிக மின்சாரம் பயன்படுத்துகிறது, திரை படபடப்பு ஏற்படும்.<br><b>LCD:</b> குறைந்த இடம் தேவை, தெளிவான படம், அதிக விலை, குறைவான மின்சாரம் பயன்படுத்துகிறது, திரை படபடப்பு இல்லை."],
+      ["பிரிண்டர்களின் இரண்டு வகைகள் யாவை?","<b>இம்பாக்ட் பிரிண்டர்கள்</b> (காகிதத்தில் அடிக்கும்) — எ.கா. டாட் மேட்ரிக்ஸ், லைன் பிரிண்டர்கள்.<br><b>நான்-இம்பாக்ட் பிரிண்டர்கள்</b> (அடிக்காதவை) — எ.கா. லேசர், இங்க் ஜெட், தெர்மல், டை சப்ளிமேஷன்."],
+      ["மதர்போர்டு (Motherboard) என்றால் என்ன?","கணினியின் அனைத்து பாகங்களையும் ஒன்றாக இணைத்து, அவை எவ்வாறு செயல்படுகின்றன என்பதை ஒருங்கிணைக்கும் முக்கிய சர்க்யூட் போர்டு."],
+      ["பொதுவான கணினி போர்ட்டுகள் மற்றும் அவற்றுடன் எவை இணைக்கப்படுகின்றன என்பதைக் கூறவும்.","<ul><li><b>PS/2</b> — கீபோர்டு, மவுஸ்</li><li><b>சீரியல் போர்ட்</b> — மோடம், மவுஸ்</li><li><b>பேரலல் போர்ட்</b> — பிரிண்டர், ஸ்கேனர்</li><li><b>நெட்வொர்க் போர்ட்</b> — கணினியை நெட்வொர்க்குடன் இணைக்கிறது</li><li><b>VGA போர்ட்</b> — மானிட்டர், ப்ரொஜெக்டர்</li><li><b>USB போர்ட்</b> — கீபோர்டு, மவுஸ், ஸ்கேனர், பிரிண்டர், கேமரா, மோடம்</li><li><b>ஆடியோ போர்ட்</b> — ஸ்பீக்கர், மைக், ஹெட்போன்</li><li><b>மோடம் போர்ட்</b> — மோடம்</li></ul>"]
+    ]
+  },
+  {
+    id:"memory", title:"நினைவகம் மற்றும் சேமிப்பு", icon:"🧠", color:"#86efac",
+    qa:[
+      ["கணினியில் காணப்படும் நினைவகத்தின் 4 முக்கிய வகைகள் யாவை?","<b>RAM</b> (Random Access Memory), <b>ROM</b> (Read Only Memory), <b>கேஷ் நினைவகம் (Cache Memory)</b>, மற்றும் <b>ரெஜிஸ்டர் (Register)</b>."],
+      ["RAM என்றால் என்ன?","முக்கிய <b>தற்காலிக</b> நினைவகம். புராசசர் வேலை செய்யும்போது தேவையான தரவு/வழிமுறைகளை இது சேமிக்கிறது. மின்சாரம் துண்டிக்கப்பட்டால், RAM-இல் உள்ள அனைத்தும் இழக்கப்படும்."],
+      ["ROM என்றால் என்ன?","தொடக்க வழிமுறைகளை வைத்திருக்கும் <b>நிரந்தர</b> நினைவகம். மின்சாரம் இல்லாமலும் தரவு தப்பிக்கும் மற்றும் பொதுவாக மாற்ற முடியாது. வகைகள்: PROM, EPROM, EEPROM."],
+      ["RAM மற்றும் ROM இடையேயான முக்கிய வேறுபாடு என்ன?","RAM = தற்காலிகம், மாற்றக்கூடியது, மின்சாரம் அணைந்தால் இழக்கப்படும். ROM = நிரந்தரம், பெரும்பாலும் நிலையானது, மின்சாரம் இல்லாமலும் தரவை வைத்திருக்கும்."],
+      ["இரண்டாம் நிலை (துணை) சேமிப்புச் சாதனங்கள் என்றால் என்ன? உதாரணங்கள் தரவும்.","கணினிக்கு உள்ளே அல்லது வெளியே தரவை நிரந்தரமாகச் சேமிக்கும் சாதனங்கள்:<ul><li><b>காந்த ஊடகம் (Magnetic media)</b> — ஹார்ட் டிஸ்க், ஃப்ளாப்பி டிஸ்க், மேக்னடிக் டேப்</li><li><b>ஒளியியல் ஊடகம் (Optical media)</b> — CD, DVD, Blu-Ray</li><li><b>சாலிட் ஸ்டேட் ஊடகம் (Solid state media)</b> — USB ஃபிளாஷ் டிரைவ், மெமரி கார்டு</li></ul>"],
+      ["CD மற்றும் DVD-யின் சேமிப்புத் திறன் என்ன?","<b>CD:</b> 650MB–900MB. <b>DVD:</b> 4.7GB–9GB."],
+      ["ஃப்ளாப்பி டிஸ்க்கின் சேமிப்புத் திறன் என்ன?","1.44 MB."],
+      ["கணினி சேமிப்பு அலகுகள், சிறியதிலிருந்து பெரியது வரை?","<code>4 Bit = 1 Nibble</code> · <code>8 Bit = 1 Byte</code> · <code>1024 Byte = 1 KB</code> · <code>1024 KB = 1 MB</code> · <code>1024 MB = 1 GB</code> · <code>1024 GB = 1 TB</code>"]
+    ]
+  },
+  {
+    id:"network", title:"நெட்வொர்க்கிங் மற்றும் தரவு தொடர்பு", icon:"🌐", color:"#c4b5fd",
+    qa:[
+      ["கணினி நெட்வொர்க் என்றால் என்ன?","தரவு மற்றும் வளங்களைப் பகிர்ந்து கொள்ள ஒன்றாக இணைக்கப்பட்ட இரண்டு அல்லது அதற்கு மேற்பட்ட கணினிகளின் குழு."],
+      ["பரப்பளவின் அடிப்படையில் நெட்வொர்க்குகளின் 3 முக்கிய வகைகள் யாவை?","<b>LAN</b> (Local Area Network) — சிறிய பகுதி, எ.கா. ஒரு கட்டிடம்/பள்ளி.<br><b>MAN</b> (Metropolitan Area Network) — ஒரு நகரத்தை உள்ளடக்குகிறது.<br><b>WAN</b> (Wide Area Network) — புவியியல் வரம்பு இல்லை, எ.கா. இணையம்."],
+      ["தரவு தொடர்பின் 3 பகுதிகள் யாவை?","<b>மூலம் (அனுப்புநர்), ஊடகம், பெறுநர்.</b>"],
+      ["தொடர்பு ஊடகத்தின் இரண்டு வகைகள் யாவை?","<b>வழிநடத்தப்பட்ட ஊடகம் (Guided media)</b> (கம்பிகளைப் பயன்படுத்துகிறது — ட்விஸ்டெட் பேர், கோஆக்ஸியல், ஃபைபர் ஆப்டிக்) மற்றும் <b>வழிநடத்தப்படாத ஊடகம் (Unguided media)</b> (அலைகளைப் பயன்படுத்துகிறது — ரேடியோ, இன்ஃப்ராரெட், மைக்ரோவேவ், செயற்கைக்கோள்)."],
+      ["தரவு அனுப்பப்படும் வழிகள் யாவை?","<b>சீரியல் பரிமாற்றம் (Serial transmission)</b> (பிட்கள் ஒன்றன் பின் ஒன்றாகச் செல்லும், 1 கம்பி தேவை) மற்றும் <b>பேரலல் பரிமாற்றம் (Parallel transmission)</b> (பல பிட்கள் ஒரே நேரத்தில் அனுப்பப்படும்)."],
+      ["தரவு ஓட்டத்தின் 3 திசைகள் யாவை?","<b>சிம்ப்ளக்ஸ் (Simplex)</b> — ஒரே திசையில் மட்டும் (TV, ரேடியோ).<br><b>ஹாஃப் டூப்ளக்ஸ் (Half duplex)</b> — இரு திசைகளிலும், ஆனால் ஒரே நேரத்தில் இல்லை (வாக்கி டாக்கி).<br><b>ஃபுல் டூப்ளக்ஸ் (Full duplex)</b> — இரு திசைகளிலும் ஒரே நேரத்தில் (தொலைபேசி)."],
+      ["நான் அறிந்திருக்க வேண்டிய நெட்வொர்க் சாதனங்கள் யாவை?","<ul><li><b>மோடம் (Modem)</b> — டிஜிட்டல் சிக்னலை ↔ அனலாக் சிக்னலாக மாற்றுகிறது</li><li><b>ஹப் (Hub)</b> — பல கணினிகளை ஒன்றாக இணைக்கிறது</li><li><b>ஸ்விட்ச் (Switch)</b> — பல கணினிகளை இணைத்து தரவு ஓட்டத்தை புத்திசாலித்தனமாக நிர்வகிக்கிறது</li><li><b>NIC (Network Interface Card)</b> — PC-யை நெட்வொர்க்குடன் இணைக்கும் கார்டு</li><li><b>சேவையகம் (Server)</b> — மற்றவர்களுக்கு சேவைகளை வழங்கும் முக்கிய கணினி</li><li><b>கிளையன்ட் (Client)</b> — சேவையகத்திலிருந்து சேவைகளைப் பெறும் கணினி</li></ul>"],
+      ["பொதுவான நெட்வொர்க் டோபாலஜிகள் யாவை?","ஸ்டார், ரிங், பஸ், ட்ரீ, மற்றும் மெஷ் டோபாலஜி."],
+      ["நெட்வொர்க்கின் நன்மைகள் மற்றும் தீமைகள் யாவை?","<b>நன்மைகள்:</b> வேகம், செலவைச் சேமிக்கும், வளங்களைப் பகிர்தல், மையப்படுத்தப்பட்ட மென்பொருள் கட்டுப்பாடு, எளிதான தொடர்பு, மின்னஞ்சல்.<br><b>தீமைகள்:</b> ஒரு தோல்வி முழு நெட்வொர்க்கையும் பாதிக்கலாம், வைரஸ்கள் வேகமாகப் பரவும், தரவு இழக்கப்படலாம்/சிதைக்கப்படலாம், வெளியாட்கள் தரவைத் திருடலாம், நிர்வகிப்பது கடினம்."]
+    ]
+  },
+  {
+    id:"numbers", title:"எண் முறைமைகள் மற்றும் லாஜிக் கேட்டுகள்", icon:"🔢", color:"#fdba74",
+    qa:[
+      ["கணினியியலில் பயன்படுத்தப்படும் 4 எண் முறைமைகள் யாவை?","<b>தசம (Decimal)</b> (அடிப்படை 10, இலக்கங்கள் 0–9), <b>இருமம் (Binary)</b> (அடிப்படை 2, இலக்கங்கள் 0–1), <b>எண்கமம் (Octal)</b> (அடிப்படை 8, இலக்கங்கள் 0–7), <b>பதினறும (Hexadecimal)</b> (அடிப்படை 16, இலக்கங்கள் 0–9, A–F)."],
+      ["தேர்வுகளுக்கு நான் அறிந்திருக்க வேண்டிய லாஜிக் கேட்டுகள் யாவை?","AND, OR, NOT, NAND, NOR, XOR, XNOR — ஒவ்வொன்றுக்கும் அதன் சொந்த குறியீடு மற்றும் உண்மை அட்டவணை (truth table) உண்டு."],
+      ["ஒவ்வொரு அடிப்படை கேட்டும் என்ன செய்கிறது என்பதற்கான விரைவான சுருக்கம்?","<ul><li><b>AND</b> — அனைத்து உள்ளீடுகளும் 1 ஆக இருந்தால் மட்டும் வெளியீடு 1</li><li><b>OR</b> — ஏதேனும் ஒரு உள்ளீடு 1 ஆக இருந்தால் வெளியீடு 1</li><li><b>NOT</b> — உள்ளீட்டைத் தலைகீழாக்குகிறது (1→0, 0→1)</li><li><b>NAND</b> — AND-க்கு எதிரானது</li><li><b>NOR</b> — OR-க்கு எதிரானது</li><li><b>XOR</b> — உள்ளீடுகள் வேறுபட்டால் மட்டும் வெளியீடு 1</li><li><b>XNOR</b> — உள்ளீடுகள் ஒரே மாதிரியாக இருந்தால் மட்டும் வெளியீடு 1</li></ul>"]
+    ]
+  },
+  {
+    id:"software", title:"மென்பொருள் மற்றும் இயக்க முறைமைகள்", icon:"🧩", color:"#93c5fd",
+    qa:[
+      ["மென்பொருளின் இரண்டு முக்கிய வகைகள் யாவை?","<b>கணினி மென்பொருள் (System software)</b> (வன்பொருளைக் கட்டுப்படுத்துகிறது — எ.கா. இயக்க முறைமை) மற்றும் <b>பயன்பாட்டு மென்பொருள் (Application software)</b> (பயனருக்கு ஒரு குறிப்பிட்ட பணியைச் செய்கிறது — எ.கா. Word, Excel)."],
+      ["இயக்க முறைமை (OS) என்றால் என்ன? உதாரணங்கள் தரவும்.","கணினியின் செயல்பாடுகளை இயக்குவதற்குத் தேவையான மென்பொருள் தொகுப்பு. உதாரணங்கள்: Windows, Linux, Unix, Mac, DOS."],
+      ["இயக்க முறைமையின் முக்கிய செயல்பாடுகள் யாவை?","நினைவக மேலாண்மை, செயல்முறை/பணி மேலாண்மை, சாதன (ஆதரவு) மேலாண்மை, பணி திட்டமிடல் (scheduling), மற்றும் பாதுகாப்பு மேலாண்மை."],
+      ["பயனர் இடைமுகங்களின் இரண்டு வகைகள் யாவை?","<b>CLI</b> (Command Line Interface) — உரை கட்டளைகளைத் தட்டச்சு செய்யவும், எ.கா. MS-DOS, Unix, Linux.<br><b>GUI</b> (Graphical User Interface) — ஐகான்கள், விண்டோக்கள், மெனுக்கள், பாயிண்டரைப் பயன்படுத்தும், எ.கா. Windows, Mac."],
+      ["GUI-யின் முக்கிய பாகங்கள் யாவை?","விண்டோக்கள், ஐகான்கள், மெனு, பாயிண்டர்."],
+      ["லைசென்ஸ் பெற்ற மற்றும் ஓப்பன்-சோர்ஸ் மென்பொருள் இடையேயான வேறுபாடு என்ன?","<b>லைசென்ஸ் பெற்ற/பதிப்புரிமை பெற்றது:</b> ஒரு நபர் அல்லது நிறுவனத்திற்குச் சொந்தமானது; பயன்படுத்த, நகலெடுக்க, அல்லது மாற்ற அனுமதி தேவை (எ.கா. Microsoft மென்பொருள்).<br><b>ஓப்பன்-சோர்ஸ்:</b> கடுமையான பதிப்புரிமையால் கட்டுப்படுத்தப்படவில்லை; சுதந்திரமாகப் பயன்படுத்தலாம், மாற்றலாம், நகலெடுக்கலாம், அல்லது பகிரலாம்."],
+      ["பயன்பாட்டு (Utility) மென்பொருளுக்கு உதாரணங்கள் யாவை?","<ul><li><b>பேக்அப் மென்பொருள்</b> — கோப்புகளின் நகல்களை உருவாக்குகிறது</li><li><b>டிஸ்க் டிஃப்ராக்மென்டர்</b> — வேகத்திற்காக டிஸ்க்கை ஒழுங்கமைக்கிறது</li><li><b>ஆண்டிவைரஸ் யூட்டிலிட்டிகள்</b> — வைரஸ்களைத் தடுக்கிறது, கண்டறிகிறது, அகற்றுகிறது</li><li><b>டிஸ்க் பார்டிஷனிங்</b> — ஒரு டிஸ்க்கை தனித்தனி பகுதிகளாகப் பிரிக்கிறது</li><li><b>டிஸ்க் க்ளீன்அப்</b> — தற்காலிக கோப்புகளை நீக்குகிறது</li></ul>"]
+    ]
+  },
+  {
+    id:"internet", title:"இணையம் மற்றும் மின்னஞ்சல்", icon:"✉️", color:"#5eead4",
+    qa:[
+      ["இணையம் என்றால் என்ன?","பல சிறிய நெட்வொர்க்குகள் ஒன்றாக இணைந்து உருவான ஒரு பெரிய உலகளாவிய நெட்வொர்க், இது உலகளவில் மில்லியன் கணக்கான கணினிகளை இணைக்கிறது."],
+      ["வலைப்பக்கம் (Web Page) என்றால் என்ன, அது எந்த மொழியில் எழுதப்படுகிறது?","இணையம் மூலம் பார்க்கவும் வழிசெலுத்தவும் முடியும் ஒரு ஆவணம், இது <b>HTML</b> (HyperText Markup Language) மொழியில் எழுதப்படுகிறது."],
+      ["IP முகவரி (IP Address) என்றால் என்ன?","இணையத்துடன் இணைக்கப்பட்ட ஒவ்வொரு சாதனத்தையும் அடையாளம் காண பயன்படுத்தப்படும் தனிச் சிறப்பான எண்/முகவரி."],
+      ["URL என்றால் என்ன?","<b>URL</b> = Uniform Resource Locator — ஒரு பிரௌசரை ஒரு குறிப்பிட்ட பக்கத்திற்கு வழிகாட்டும் இணைய முகவரி. உதாரண அமைப்பு: <code>Protocol // Server . Domain / Page</code>"],
+      ["வலை உலாவி (Web Browser) என்றால் என்ன? உதாரணங்கள் தரவும்.","இணையத்தை அணுகவும் பார்க்கவும் பயன்படுத்தப்படும் மென்பொருள். உதாரணங்கள்: Internet Explorer, Google Chrome, Mozilla Firefox, Opera, Safari."],
+      ["தேடுபொறி (Search Engine) என்றால் என்ன? உதாரணங்கள் தரவும்.","இணையத்தில் தகவல்களைத் தேட பயன்படுத்தப்படும் ஒரு கருவி. உதாரணங்கள்: Google, Yahoo, Bing/MSN, Altavista."],
+      ["பொதுவான டொமைன் பெயர் முடிவுகள் மற்றும் அவற்றின் அர்த்தம் என்ன?","<code>.com</code> வணிகம் · <code>.edu</code> கல்வி · <code>.org</code> தன்னார்வ அமைப்பு · <code>.gov</code> அரசு · <code>.mil</code> இராணுவம் · <code>.int</code> சர்வதேச அமைப்பு · <code>.net</code> நெட்வொர்க் தொழில்நுட்பம் · <code>.lk</code> இலங்கை · <code>.us</code> அமெரிக்கா"],
+      ["இணையத்தின் முக்கிய பயன்கள்/நன்மைகள் யாவை?","தகவல்களுக்கான எளிதான அணுகல், மின்னஞ்சல், இணையம் மூலம் அழைப்பு, ஆன்லைன் வணிகம்/ஷாப்பிங், கோப்பு பரிமாற்றம், செய்திகள், மற்றும் கல்வி வளங்களுக்கான அணுகல்."],
+      ["மின்னஞ்சல் முகவரியின் பகுதிகள் யாவை? எ.கா. sprashanthan6@gmail.com","<code>@</code>-க்கு முன் உள்ள பகுதி <b>பயனர்பெயர் (username)</b>, <code>@</code>-க்குப் பின் உள்ள பகுதி <b>டொமைன் பெயர் (domain name)</b>."],
+      ["மின்னஞ்சலில் CC மற்றும் BCC இடையேயான வேறுபாடு என்ன?","<b>CC (Carbon Copy):</b> நகலைப் பெற்ற மற்றவர்கள் யார் என்று அனைவரும் பார்க்க முடியும்.<br><b>BCC (Blind Carbon Copy):</b> மறைக்கப்பட்டது — யாருக்கு BCC அனுப்பப்பட்டது என்பதை மற்ற பெறுநர்களால் பார்க்க முடியாது."],
+      ["மின்னஞ்சலில் 'இணைப்பு' (Attachment) என்றால் என்ன?","மின்னஞ்சல் செய்தியுடன் இணைத்து அனுப்பப்படும் ஒரு தனி கோப்பு (ஆவணம், படம், ஒலி, வீடியோ)."],
+      ["மின்னஞ்சலின் நன்மைகள் மற்றும் தீமைகள் யாவை?","<b>நன்மைகள்:</b> வேகமானது, நம்பகமானது, வசதியானது, குறைந்த செலவு, ஒரே நேரத்தில் பலருக்கு அனுப்பலாம்.<br><b>தீமைகள்:</b> பெறுநரை சென்றடையாமல் போகலாம், சரியான நேரத்தில் திறக்கப்படாமல் போகலாம், மின்சாரம்/இணையம் தேவை, பெறுநர் பதில் அளிக்காமல் இருக்கலாம்."]
+    ]
+  },
+  {
+    id:"security", title:"பாதுகாப்பு, மால்வேர் மற்றும் ஆரோக்கியம்", icon:"🛡️", color:"#fca5a5",
+    qa:[
+      ["கணினி வைரஸ் என்றால் என்ன?","ஒரு அமைப்பிற்குள் தானாகவே பெருகும் திறன் கொண்ட தீங்கிழைக்கும் குறியீடு, இது இணையம், நெட்வொர்க்குகள், மின்னஞ்சல், CD-கள், ஃப்ளாப்பி டிஸ்க்குகள், ஃபிளாஷ் டிரைவ்கள் மூலம் பரவி சேதத்தை ஏற்படுத்துகிறது."],
+      ["வார்ம் (Worm) என்றால் என்ன?","<b>எந்த மனித செயலும் இல்லாமல்</b> தானாகவே பெருகும் மால்வேர், நெட்வொர்க்குகள் வழியாக வேகமாகப் பரவி பரவலான சேதத்தை ஏற்படுத்துகிறது."],
+      ["ட்ரோஜன் ஹார்ஸ் (Trojan Horse) என்றால் என்ன?","பயனுள்ள/சட்டபூர்வமான மென்பொருள் போல் நடிக்கும் மால்வேர், ஆனால் நிறுவப்பட்டவுடன் ரகசியமாக சேதத்தை ஏற்படுத்துகிறது."],
+      ["ஸ்பைவேர் (Spyware) என்றால் என்ன?","உங்கள் கணினியில் மறைந்திருந்து, உங்கள் தரவை (கடவுச்சொற்கள் உட்பட) ரகசியமாக நகலெடுத்து/வெளியாட்களுக்கு அனுப்பும் மால்வேர்."],
+      ["ஆட்வேர் (Adware) என்றால் என்ன?","வலைத்தளங்களை உலாவும்போது தோன்றும் தேவையற்ற விளம்பரங்கள் மற்றும் பாப்-அப்கள்."],
+      ["வைரஸ் தாக்குதல் கணினியில் என்ன விளைவுகளை ஏற்படுத்தும்?","சேமிக்கப்பட்ட தரவு/தகவல் இழப்பு, மென்பொருள் சரியாக வேலை செய்யாமல் போவது, கணினியின் செயல்திறன் குறைவது, மற்றும் நீண்ட காலத்திற்கு வன்பொருள் சேதம் ஏற்படக்கூடும்."],
+      ["கணினியில் வைரஸ் இருப்பதற்கான எச்சரிக்கை அறிகுறிகள் யாவை?","கணினி வழக்கத்தை விட மெதுவாக இயங்குகிறது, காரணமின்றி க்ராஷ் ஆகிறது, தொடங்க அதிக நேரம் எடுக்கும் அல்லது மறுதொடக்கம் செய்ய முடியாது, சில மென்பொருள்கள் இயங்காது, கோப்புகள் மறைந்துவிடும் அல்லது தேவையற்ற கோப்புகள் தோன்றும், தேவையற்ற பாப்-அப்கள்/செய்திகள் தோன்றும்."],
+      ["வைரஸ்களிலிருந்து கணினியை எவ்வாறு பாதுகாக்கலாம்?","ஆண்டிவைரஸ் மென்பொருளை இயக்கத்திலும் புதுப்பிக்கப்பட்டதாகவும் வைத்திருக்கவும், வழக்கமான பேக்அப் எடுக்கவும், உள்ளமைக்கப்பட்ட பாதுகாப்பு அம்சங்களைப் பயன்படுத்தவும், வழக்கமான பயன்பாட்டிற்கு admin கணக்கைப் பயன்படுத்துவதைத் தவிர்க்கவும், மின்னஞ்சல் இணைப்புகளைத் திறக்கும்போது கவனமாக இருக்கவும், பென்ட்ரைவ்கள்/ஃப்ளாப்பி டிஸ்க்குகளைத் திறப்பதற்கு முன் ஸ்கேன் செய்யவும்."],
+      ["நீண்ட நேரம் கணினி பயன்படுத்துவதால் ஏற்படும் ஆரோக்கிய பிரச்சினைகள் யாவை?","கண் அழுத்தம், முதுகுவலி, குறைந்த நோய் எதிர்ப்பு சக்தி, மற்றும் தலைவலி. ஒரு பொதுவான நிலை 'Repetitive Strain Injury' (RSI) — தொடர்ச்சியான தட்டச்சு/மவுஸ் பயன்பாட்டால் கை/மணிக்கட்டில் வலி."],
+      ["கணினி பயன்படுத்தும்போது என் ஆரோக்கியத்தை எவ்வாறு பாதுகாப்பது?","அடிக்கடி கண் இமைக்கவும், ஒவ்வொரு 10 நிமிடங்களுக்கும் 20+ அடி தொலைவில் உள்ள ஒன்றைப் பார்க்கவும், நேராக அமரவும் (குனியாமல்), எர்கனாமிக் கீபோர்டு/மவுஸைப் பயன்படுத்தவும், சரியான இடைவேளைகள் எடுக்கவும், அறையை காற்றோட்டமாகவும் நல்ல வெளிச்சத்துடனும் வைத்திருக்கவும்."]
+    ]
+  },
+  {
+    id:"database", title:"தரவுத்தளம் (DBMS)", icon:"🗄️", color:"#fcd34d",
+    qa:[
+      ["DBMS என்றால் என்ன?","<b>Database Management System</b> — தரவை எளிதாகவும் பாதுகாப்பாகவும் சேமிக்க, நிர்வகிக்க, பாதுகாக்க பயன்படும் மென்பொருள். இது தரவைச் சேர்க்க, திருத்த, நீக்க, ஒழுங்கமைக்க, வினவ (query) மற்றும் பாதுகாக்க முடியும்."],
+      ["Access போன்ற DBMS-இல் உள்ள முக்கிய பொருள்கள் யாவை?","டேபிள்கள், க்வெரிகள், படிவங்கள் (Forms), அறிக்கைகள் (Reports), பக்கங்கள் (Pages), மேக்ரோக்கள், மாட்யூல்கள்."],
+      ["தரவுத்தளத்தில் டேபிள் (Table) என்றால் என்ன?","தரவு உண்மையில் சேமிக்கப்படும் முக்கிய அலகு, வரிசைகள் மற்றும் நெடுவரிசைகளாக (fields) ஒழுங்கமைக்கப்பட்டுள்ளது."],
+      ["க்வெரி (Query) எதற்காகப் பயன்படுத்தப்படுகிறது?","ஒரு டேபிளில் உள்ள தரவைப் பற்றி கேள்விகளைக் கேட்டு, உங்களுக்குத் தேவையான தகவலை மட்டும் பெற."],
+      ["படிவம் (Form) எதற்காகப் பயன்படுத்தப்படுகிறது?","ஒரு எளிதான, பயனர் நட்பு வழியில் டேபிளில் தரவை உள்ளிட (நேரடியாக டேபிளில் தட்டச்சு செய்வதற்குப் பதிலாக)."],
+      ["அறிக்கை (Report) எதற்காகப் பயன்படுத்தப்படுகிறது?","ஒரு டேபிள் அல்லது க்வெரியிலிருந்து எடுக்கப்பட்ட தரவை கவர்ச்சிகரமான, ஒழுங்கமைக்கப்பட்ட தளவமைப்பில் காட்ட அல்லது அச்சிட."],
+      ["ப்ரைமரி கீ (Primary Key) என்றால் என்ன?","ஒரு டேபிளில் உள்ள ஒவ்வொரு பதிவையும் (record) தனித்துவமாக அடையாளம் காணும் ஒரு ஃபீல்டு (அல்லது ஃபீல்டுகளின் கலவை)."],
+      ["ஃபாரின் கீ (Foreign Key) என்றால் என்ன?","மற்றொரு டேபிளின் ப்ரைமரி கீயைக் குறிக்கும் ஒரு டேபிளில் உள்ள ஃபீல்டு, இது இரு டேபிள்களையும் இணைக்கிறது."],
+      ["Data Duplication மற்றும் Data Redundancy இடையேயான வேறுபாடு என்ன?","<b>Data Duplication:</b> ஒரே தரவு ஒரு டேபிளின் வெவ்வேறு வரிசைகளில் மீண்டும் மீண்டும் வருவது.<br><b>Data Redundancy:</b> ஒரே தரவு பல வெவ்வேறு டேபிள்களில் மீண்டும் சேமிக்கப்படுவது."],
+      ["டேபிள்களுக்கு இடையேயான உறவு வகைகள் யாவை?","One-to-One [1:1], One-to-Many [1:M], Many-to-Many [M:N]."],
+      ["கையேடு ஃபைலிங் மற்றும் மின்னணு (தரவுத்தள) ஃபைலிங் இடையேயான வேறுபாடு என்ன?","<b>கையேடு:</b> குறைந்த செயல்திறன், திருத்துவது கடினம், குறைவான நம்பகத்தன்மை, தேடுவது கடினம், அதிக இடம் & ஆட்கள் தேவை.<br><b>மின்னணு:</b> அதிக செயல்திறன், எளிதில் திருத்தலாம், அதிக நம்பகத்தன்மை, எளிதாக தேடலாம், குறைந்த இடம் & குறைவான ஆட்கள் தேவை."]
+    ]
+  },
+  {
+    id:"office", title:"MS Office விரைவு குறிப்பு", icon:"📊", color:"#86efac",
+    qa:[
+      ["பொதுவான வேர்டு புராசசிங் மென்பொருள் உதாரணங்கள் யாவை?","Microsoft Word, LibreOffice Writer, Kingsoft Office, Apple iWork Pages, Corel WordPerfect."],
+      ["Word-இல் உரையை Bold, Underline, அல்லது Superscript ஆக்குவது எப்படி?","<b>Bold:</b> உரையைத் தேர்ந்தெடுக்கவும் → <code>Ctrl + B</code> அல்லது Home ரிப்பன் → Bold.<br><b>Underline:</b> உரையைத் தேர்ந்தெடுக்கவும் → <code>Ctrl + U</code>.<br><b>Superscript</b> (17TH-இல் உள்ள TH போல்): உரையைத் தேர்ந்தெடுக்கவும் → Home → Superscript.<br><b>Subscript</b> (H2O-இல் உள்ள 2 போல்): உரையைத் தேர்ந்தெடுக்கவும் → Home → Subscript."],
+      ["Word-இல் படம், குறியீடு, அல்லது ஹைப்பர்லிங்கை எவ்வாறு செருகுவது?","<b>படம்:</b> Insert → Picture → கோப்பைத் தேர்ந்தெடுக்கவும்.<br><b>குறியீடு:</b> Insert → Symbols → குறியீட்டைத் தேர்ந்தெடுக்கவும்.<br><b>ஹைப்பர்லிங்க்:</b> Insert → Hyperlink → இணைப்பை உள்ளிடவும்."],
+      ["நான் அறிந்திருக்க வேண்டிய முக்கிய Excel ஃபார்முலாக்கள் யாவை?","<code>=SUM(range)</code> — மதிப்புகளின் மொத்தம்<br><code>=AVERAGE(range)</code> — சராசரி மதிப்பு<br><code>=MAX(range)</code> — அதிக மதிப்பு<br><code>=MIN(range)</code> — குறைந்த மதிப்பு<br><code>=RANK(number, range)</code> — தரவரிசை நிலை"],
+      ["Excel-இல் பொதுவாகப் பயன்படுத்தப்படும் விளக்கப்பட வகைகள் யாவை?","கோலம் சார்ட், பார் சார்ட், லைன் சார்ட், பை சார்ட், ஸ்கேட்டர் சார்ட்."],
+      ["PowerPoint பார்வை முறைகள் (view modes) யாவை?","நார்மல் வியூ, ஸ்லைடு சார்ட்டர் வியூ, அவுட்லைன் வியூ, பிரசன்டேஷன் (ஸ்லைடு ஷோ) வியூ."],
+      ["PowerPoint-இல் அனிமேஷன் அல்லது ஸ்லைடு டிரான்சிஷனை எவ்வாறு சேர்ப்பது?","<b>அனிமேஷன்:</b> Slide Show → Custom Animation → Add Effect.<br><b>டிரான்சிஷன்கள்:</b> Slide Show → Slide Transitions → ஒரு எஃபெக்டைத் தேர்ந்தெடுக்கவும்."]
+    ]
+  },
+  {
+    id:"careers", title:"IT தொழில் வாய்ப்புகள் மற்றும் நடைமுறை பயன்பாடுகள்", icon:"💼", color:"#f9a8d4",
+    qa:[
+      ["அன்றாட வாழ்க்கையில் IT எங்கே பயன்படுத்தப்படுகிறது?","கல்வி (இ-கற்றல், பள்ளி பதிவுகள்), சுகாதாரம் (CT/MRI ஸ்கேனர்கள், டெலிமெடிசின்), வங்கி (ATM, ஆன்லைன் பான்கிங்), தொடர்பு (வீடியோ அழைப்புகள், மின்னஞ்சல், ஃபேக்ஸ்), கட்டுமானம், மற்றும் பாதுகாப்பு அமைப்புகள்."],
+      ["பொதுவான தொழில்நுட்பம் தொடர்பான வேலை பதவிகள் யாவை?","டேட்டா என்ட்ரி ஆபரேட்டர், கம்ப்யூட்டர் ஆபரேட்டர், புரோகிராமர், சாஃப்ட்வேர் டெவலப்பர், சிஸ்டம் அனலிஸ்ட், சாஃப்ட்வேர் இன்ஜினியர், ஹார்ட்வேர் இன்ஜினியர், நெட்வொர்க் அட்மினிஸ்ட்ரேட்டர், IT மேனேஜர், வெப் டெவலப்பர், டெஸ்க்டாப் பப்ளிஷர்."]
+    ]
+  }
+];
+
+const I18N = {
+  en: {
+    eyebrow: "GCE A/L · GIT SHORT NOTES",
+    h1: "GIT Seminar Guide,<br>as quick Q&amp;A",
+    sub: "Your Tamil short-notes PDF, turned into an easy English Q&amp;A revision site. Tap a card to open the answer. Use the search or colour pills to jump to a topic fast.",
+    statTopics: "Topics",
+    statCards: "Q&amp;A cards",
+    statExam: "Exam focused",
+    placeholder: "Search a question... e.g. RAM, LAN, virus, Excel formula",
+    footer: "Made for Rinas · study smart, not hard ⚡",
+    allTopics: "All Topics",
+    noResults: "No results found. Try another word 🔍",
+    qCount: (n)=> n + " Q"
+  },
+  ta: {
+    eyebrow: "GCE A/L · GIT சுருக்க குறிப்புகள்",
+    h1: "GIT கருத்தரங்கு வழிகாட்டி,<br>விரைவு கேள்வி &amp; பதில்",
+    sub: "உங்கள் தமிழ் சுருக்கக் குறிப்புகள் PDF, எளிய கேள்வி &amp; பதில் திருத்தல் தளமாக மாற்றப்பட்டுள்ளது. பதிலைத் திறக்க ஒரு அட்டையைத் தட்டவும். ஒரு தலைப்பிற்கு வேகமாகச் செல்ல தேடலையோ வண்ண பில்களையோ பயன்படுத்தவும்.",
+    statTopics: "தலைப்புகள்",
+    statCards: "கேள்வி-பதில் அட்டைகள்",
+    statExam: "தேர்வு மையம்",
+    placeholder: "ஒரு கேள்வியைத் தேடுங்கள்... எ.கா. RAM, LAN, virus, Excel formula",
+    footer: "Rinas-க்காக உருவாக்கப்பட்டது · புத்திசாலித்தனமாகப் படியுங்கள், கடினமாக அல்ல ⚡",
+    allTopics: "அனைத்து தலைப்புகள்",
+    noResults: "முடிவுகள் இல்லை. வேறு வார்த்தையை முயற்சிக்கவும் 🔍",
+    qCount: (n)=> n + " கே"
+  }
+};
+
+let currentLang = 'en';
+let DATA = DATA_EN;
+
+const sectionsEl = document.getElementById('sections');
+const pillsEl = document.getElementById('pills');
+
+function render(filterId, searchTerm){
+  sectionsEl.innerHTML = "";
+  const term = (searchTerm||"").trim().toLowerCase();
+  const t = I18N[currentLang];
+
+  DATA.forEach(sec=>{
+    if(filterId && filterId !== 'all' && filterId !== sec.id) return;
+
+    const matched = sec.qa.filter(([q,a])=>{
+      if(!term) return true;
+      return (q+a).toLowerCase().includes(term);
+    });
+    if(term && matched.length===0) return;
+
+    const section = document.createElement('div');
+    section.className='section';
+    section.id = sec.id;
+    section.innerHTML = `
+      <div class="section-head">
+        <div class="section-icon" style="border-color:${sec.color}55; color:${sec.color}">${sec.icon}</div>
+        <div class="section-title">${sec.title}</div>
+        <div class="section-count">${t.qCount(matched.length)}</div>
+      </div>
+    `;
+    const list = document.createElement('div');
+    matched.forEach(([q,a],i)=>{
+      const qa = document.createElement('details');
+      qa.className='qa';
+      qa.style.setProperty('--accent', sec.color);
+      if(term) qa.open = true;
+      qa.innerHTML = `
+        <summary>
+          <span class="qmark">Q${i+1}.</span>
+          <span>${q}</span>
+          <span class="chev">▾</span>
+        </summary>
+        <div class="answer">${a}</div>
+      `;
+      list.appendChild(qa);
+    });
+    section.appendChild(list);
+    sectionsEl.appendChild(section);
+  });
+
+  if(sectionsEl.children.length===0){
+    sectionsEl.innerHTML = `<p style="color:var(--muted); text-align:center; padding:40px 0;">${t.noResults}</p>`;
+  }
+}
+
+function buildPills(){
+  pillsEl.innerHTML = "";
+  const t = I18N[currentLang];
+  const allPill = document.createElement('div');
+  allPill.className='pill active';
+  allPill.dataset.id='all';
+  allPill.style.color = '#e2e8f0';
+  allPill.innerHTML = `<span class="led"></span> ${t.allTopics}`;
+  pillsEl.appendChild(allPill);
+
+  DATA.forEach(sec=>{
+    const p = document.createElement('div');
+    p.className='pill';
+    p.dataset.id=sec.id;
+    p.style.color = sec.color;
+    p.innerHTML = `<span class="led"></span> ${sec.icon} ${sec.title.split(' ')[0]}`;
+    pillsEl.appendChild(p);
+  });
+
+  pillsEl.addEventListener('click', (e)=>{
+    const pill = e.target.closest('.pill');
+    if(!pill) return;
+    [...pillsEl.children].forEach(c=>c.classList.remove('active'));
+    pill.classList.add('active');
+    document.getElementById('searchInput').value='';
+    render(pill.dataset.id, '');
+    if(pill.dataset.id !== 'all'){
+      document.getElementById(pill.dataset.id)?.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  });
+}
+
+function applyStaticText(){
+  const t = I18N[currentLang];
+  document.getElementById('eyebrowText').textContent = t.eyebrow;
+  document.getElementById('h1Text').innerHTML = t.h1;
+  document.getElementById('subText').innerHTML = t.sub;
+  document.getElementById('statTopics').innerHTML = t.statTopics;
+  document.getElementById('statCards').innerHTML = t.statCards;
+  document.getElementById('statExam').innerHTML = t.statExam;
+  document.getElementById('searchInput').placeholder = t.placeholder;
+  document.getElementById('footerText').textContent = t.footer;
+}
+
+function switchLang(lang){
+  if(lang === currentLang) return;
+  currentLang = lang;
+  DATA = (lang === 'ta') ? DATA_TA : DATA_EN;
+  document.body.classList.toggle('lang-ta', lang === 'ta');
+  document.documentElement.lang = lang;
+  [...document.getElementById('langTabs').children].forEach(b=>{
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  document.getElementById('searchInput').value = '';
+  applyStaticText();
+  buildPills();
+  render('all', '');
+}
+
+document.getElementById('langTabs').addEventListener('click', (e)=>{
+  const btn = e.target.closest('.lang-tab');
+  if(!btn) return;
+  switchLang(btn.dataset.lang);
+});
+
+document.getElementById('searchInput').addEventListener('input', (e)=>{
+  [...pillsEl.children].forEach(c=>c.classList.remove('active'));
+  pillsEl.firstChild.classList.add('active');
+  render('all', e.target.value);
+});
+
+buildPills();
+render('all','');
+</script>
+</body>
+</html>
